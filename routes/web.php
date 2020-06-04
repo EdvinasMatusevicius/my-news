@@ -14,20 +14,37 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/','homeController')->name('index');
+
+Auth::routes(['verify'=>true]);
+
+Route::middleware('verified')->group(function(){
+    Route::get('account', 'AccountController@index')->name('account.index');
+
 });
 
-Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
+//-------------------------------------
+//ADMIN SIDE ROUTES
+//-------------------------------------
 Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
     Route::namespace('Auth')->group(function(){
         Route::get('login', 'LoginController@showLoginForm')->name('login');
         Route::post('login', 'LoginController@login')->name('login.post');
         Route::post('logout','LoginController@logout')->name('logout');
+        Route::get('password/reset','ForgotPasswordController@showLinkRequestForm')
+        ->name('password.request');
+        Route::post('password/email','ForgotPasswordController@sendResetLinkEmail')
+        ->name('password.email');
+
+        Route::get('password/reset/{token}','ResetPasswordController@showResetForm')->name('password.reset');
+        Route::post('password/reset','ResetPasswordController@reset')
+        ->name('password.update');
     });
 
-    Route::get('/','AdminHomeController')->name('home');
+    Route::middleware('auth:admin')->group(function(){
+        Route::get('/','AdminHomeController')->name('home');
+
+        Route::resource('employee', 'EmployeeController');
+    });
 });

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Notifications\ResetAdminPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,8 +13,8 @@ use Illuminate\Database\Eloquent\Model;
  * App\Admin
  *
  * @property int $id
- * @property string|null $first-name
- * @property string|null $last-name
+ * @property string|null $first_name
+ * @property string|null $last_name
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password
@@ -54,5 +55,11 @@ class Admin extends Authenticatable
     ];
     protected $casts = [
         'email_verified_at'=>'datetime',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetAdminPasswordNotification($token));
+    }
 }
