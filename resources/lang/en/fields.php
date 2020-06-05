@@ -11,5 +11,9 @@ return [
     'created_at' => 'Created',
     'updated_at' => 'Last update',
     'password' => 'Password',
-    'password_confirmation' => 'Repeat password'
+    'password_confirmation' => 'Repeat password',
+    'poster' => 'Poster',
+    'title' => 'Title',
+    'slug' => 'Slug',
+    'author' =>'Author',
 ]; 
