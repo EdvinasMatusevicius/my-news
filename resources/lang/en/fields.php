@@ -16,4 +16,6 @@ return [
     'title' => 'Title',
     'slug' => 'Slug',
     'author' =>'Author',
+    'content' => 'Content',
+    'active' => 'Active',
 ]; 

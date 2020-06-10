@@ -22,12 +22,22 @@
                 @foreach($items as $item)
                     <tr>
                         <td>{{ $item->id }}</td>
-                        <td>{{ $item->poster }}</td>
+                        <td>
+                            @if ($item->poster)
+                                {{-- <img src="{{
+                                asset('/storage/'.$item->poster)
+                                }}"
+                                     alt="{{ $item->title }}" width="100"> --}}
+                                     <img src="{{ \Illuminate\Support\Facades\Storage::url($item->poster) }}" width="100">
+                            @endif
+                        </td>
                         <td>{{ $item->title }}</td>
                         <td>{{ $item->slug }}</td>
                         <td>
-                            <a class="btn btn-sm btn-primary" href="{{ route('admin.article.edit', ['article' => $item->id]) }}">Edit</a>
-                            <a class="btn btn-sm btn-success" href="{{ route('admin.article.show', ['article' => $item->id]) }}">Show</a>
+                            <a class="btn btn-sm btn-primary"
+                               href="{{ route('admin.article.edit', ['article' => $item->id]) }}">Edit</a>
+                            <a class="btn btn-sm btn-success"
+                               href="{{ route('admin.article.show', ['article' => $item->id]) }}">Show</a>
                             <form action="{{ route('admin.article.destroy', ['article' => $item->id]) }}" method="post">
                                 @csrf
                                 @method('delete')
@@ -45,4 +55,4 @@
             {{ $items->links() }}
         </div>
     </div>
-@endsection 
+@endsection
