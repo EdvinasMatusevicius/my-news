@@ -7,12 +7,16 @@ namespace App\Http\Controllers\Account;
 use App\Article;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\Account\ArticleStoreRequest;
+use App\Http\Requests\Front\Account\ArticleUpdateRequest;
 use App\Repositories\ArticleRepository;
 use Exception;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+/**
+ * Class ArticleController
+ * @package App\Http\Controllers\Account
+ */
 class ArticleController extends Controller
 {
     /**
@@ -73,16 +77,7 @@ class ArticleController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param Article $article
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Article $article)
-    {
-        //
-    }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -98,23 +93,26 @@ class ArticleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param ArticleUpdateRequest $request
      * @param Article $article
-     * @return \Illuminate\Http\Response
+     * @return RedirectResponse
      */
-    public function update(Request $request, Article $article)
+    public function update(ArticleUpdateRequest $request, Article $article): RedirectResponse
     {
-        //
-    }
+        try {
+            $article->update($request->getData());
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param Article $article
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Article $article)
-    {
-        //
+            if ($article->wasChanged()) {
+                $this->articleRepository->changeActive($article->id, false);
+            }
+
+            return redirect()->route('account.article.index')
+                ->with('success', 'Article updated.');
+        } catch (Exception $exception) {
+            logger()->error($exception->getMessage(), $exception->getTrace());
+
+            return back()->with('danger', 'Something wrong, please try again later.')
+                ->withInput();
+        }
     }
 }

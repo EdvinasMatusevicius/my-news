@@ -76,6 +76,7 @@
                         @include('layouts._partials.alerts')
                         
                         @yield('content')
+                        
                     </div>
                 </div>
             </div>

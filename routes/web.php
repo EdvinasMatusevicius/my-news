@@ -29,6 +29,8 @@ Route::middleware('verified')->group(function () {
         Route::resource('article', 'Account\\ArticleController')->except(['show', 'destroy']);
     });
 });
+Route::post('comment', 'CommentController@store')->name('comment.store');
+
 
 
 //----------------------------------------

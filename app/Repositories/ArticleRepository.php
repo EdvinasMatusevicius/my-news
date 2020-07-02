@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Article;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ArticleRepository
 {
@@ -35,6 +36,9 @@ class ArticleRepository
     public function getActiveBySlug(string $slug): Article
     {
         return Article::query()
+        ->with(['comments' => function (HasMany $query) {
+            $query->orderByDesc('created_at');
+        }])
             ->where('active', '=', true)
             ->where('slug', '=', $slug)
             ->firstOrFail();
@@ -49,5 +53,16 @@ class ArticleRepository
             ->where('user_id', '=', $accountId)
             ->orderByDesc('created_at')
             ->paginate();
+    }
+     /**
+     * @param int $id
+     * @param bool $active
+     * @return int
+     */
+    public function changeActive(int $id, bool $active = false): int
+    {
+        return Article::query()
+            ->where('id', $id)
+            ->update(['active' => $active]);
     }
 } 
